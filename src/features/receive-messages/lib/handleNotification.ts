@@ -1,5 +1,5 @@
-import { useChatStore, type Chat } from '@/entities/chat'
-import { useMessageStore, type MessageDirection } from '@/entities/message'
+import { chatModel, type Chat } from '@/entities/chat'
+import { messageModel, type MessageDirection } from '@/entities/message'
 import type { MessageData, NotificationBody, SenderData } from '@/shared/api'
 import { formatPhone } from '@/shared/lib'
 
@@ -17,9 +17,9 @@ const extractText = (data?: MessageData) => {
 
 /** Запоминает числовой id MAX у чата, созданного по номеру телефона */
 const linkMaxId = (chatKey: string, maxId: string) => {
-  const { chats, updateChat } = useChatStore.getState()
+  const { chats } = chatModel.getState()
   const chat = chats.find((item) => item.id === chatKey)
-  if (chat && !chat.maxId) updateChat(chat.id, { maxId })
+  if (chat && !chat.maxId) chatModel.updateChat(chat.id, { maxId })
 }
 
 /**
@@ -27,7 +27,7 @@ const linkMaxId = (chatKey: string, maxId: string) => {
  * Сопоставляем по maxId / chatId / номеру телефона, иначе создаём новый чат.
  */
 const resolveChat = (sender: SenderData, direction: MessageDirection): Chat => {
-  const { chats, addChat, updateChat } = useChatStore.getState()
+  const { chats } = chatModel.getState()
   const phone =
     direction === 'incoming' && sender.senderPhoneNumber ? String(sender.senderPhoneNumber) : undefined
   const name =
@@ -48,7 +48,7 @@ const resolveChat = (sender: SenderData, direction: MessageDirection): Chat => {
     if (!existing.phone && phone) patch.phone = phone
     // Заменяем номер на имя контакта, если пользователь не переименовывал чат
     if (name && existing.phone && existing.name === formatPhone(existing.phone)) patch.name = name
-    if (Object.keys(patch).length) updateChat(existing.id, patch)
+    if (Object.keys(patch).length) chatModel.updateChat(existing.id, patch)
     return { ...existing, ...patch }
   }
 
@@ -61,7 +61,7 @@ const resolveChat = (sender: SenderData, direction: MessageDirection): Chat => {
     unread: 0,
     updatedAt: Date.now(),
   }
-  addChat(chat)
+  chatModel.addChat(chat)
   return chat
 }
 
@@ -71,7 +71,7 @@ export const handleNotification = (body: NotificationBody) => {
   const { idMessage, senderData } = body
   if (!direction || text === null || !idMessage || !senderData) return
 
-  const { addMessage, findMessage } = useMessageStore.getState()
+  const { findMessage } = messageModel
 
   // Сообщение, отправленное из этого интерфейса, уже есть в истории
   const known =
@@ -87,10 +87,17 @@ export const handleNotification = (body: NotificationBody) => {
 
   const chat = resolveChat(senderData, direction)
   const timestamp = body.timestamp * 1000
-  const { activeChatId, updateChat } = useChatStore.getState()
+  const { activeChatId } = chatModel.getState()
 
-  addMessage({ id: idMessage, chatKey: chat.id, text, timestamp, direction, status: 'sent' })
-  updateChat(chat.id, {
+  messageModel.addMessage({
+    id: idMessage,
+    chatKey: chat.id,
+    text,
+    timestamp,
+    direction,
+    status: 'sent',
+  })
+  chatModel.updateChat(chat.id, {
     updatedAt: Math.max(chat.updatedAt, timestamp),
     unread:
       direction === 'incoming' && activeChatId !== chat.id ? chat.unread + 1 : chat.unread,

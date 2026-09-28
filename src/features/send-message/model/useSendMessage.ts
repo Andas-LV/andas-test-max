@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import { useChatStore, type Chat } from '@/entities/chat'
-import { useMessageStore } from '@/entities/message'
+import { chatModel, type Chat } from '@/entities/chat'
+import { messageModel } from '@/entities/message'
 import { useCredentials } from '@/entities/session'
 import { greenApi } from '@/shared/api'
 
@@ -13,7 +13,7 @@ export const useSendMessage = () => {
     async (chat: Chat, text: string) => {
       if (!credentials) return
 
-      const { addMessage, updateMessage, removeMessage, findMessage } = useMessageStore.getState()
+      const { addMessage, updateMessage, removeMessage, findMessage } = messageModel
       const localId = createLocalId()
       const timestamp = Date.now()
 
@@ -25,7 +25,7 @@ export const useSendMessage = () => {
         direction: 'outgoing',
         status: 'pending',
       })
-      useChatStore.getState().updateChat(chat.id, { updatedAt: timestamp })
+      chatModel.updateChat(chat.id, { updatedAt: timestamp })
 
       try {
         const { idMessage } = await greenApi.sendMessage(credentials, {

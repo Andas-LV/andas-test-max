@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
-import { useSessionStore } from '@/entities/session'
+import { sessionModel } from '@/entities/session'
 import { getApiErrorMessage, greenApi, type GreenApiCredentials } from '@/shared/api'
 import { buildDefaultApiUrl } from '@/shared/config'
 import { Alert, Button, Input } from '@/shared/ui'
@@ -41,7 +41,6 @@ const LoginError = ({ error }: { error: Error }) => {
 }
 
 export const LoginForm = () => {
-  const setCredentials = useSessionStore((state) => state.setCredentials)
   const [idInstance, setIdInstance] = useState(import.meta.env.VITE_ID_INSTANCE ?? '')
   const [apiTokenInstance, setApiTokenInstance] = useState(
     import.meta.env.VITE_API_TOKEN_INSTANCE ?? '',
@@ -52,7 +51,7 @@ export const LoginForm = () => {
 
   const { mutate, isPending, error, reset } = useMutation({
     mutationFn: verifyCredentials,
-    onSuccess: setCredentials,
+    onSuccess: sessionModel.setCredentials,
   })
 
   const handleSubmit = (event: FormEvent) => {

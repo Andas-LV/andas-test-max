@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { useChatStore } from '@/entities/chat'
+import { chatModel } from '@/entities/chat'
 import { formatPhone, isValidPhone, normalizePhone } from '@/shared/lib'
 import { Button, CloseIcon, IconButton, Input } from '@/shared/ui'
 
@@ -20,11 +20,11 @@ export const CreateChatForm = ({ onClose }: CreateChatFormProps) => {
       return
     }
 
-    const { chats, addChat, setActiveChat } = useChatStore.getState()
+    const { chats } = chatModel.getState()
     const existing = chats.find((chat) => chat.phone === phone)
 
     if (!existing) {
-      addChat({
+      chatModel.addChat({
         id: `phone:${phone}`,
         chatId: `${phone}@c.us`,
         phone,
@@ -34,7 +34,7 @@ export const CreateChatForm = ({ onClose }: CreateChatFormProps) => {
       })
     }
 
-    setActiveChat(existing?.id ?? `phone:${phone}`)
+    chatModel.setActiveChat(existing?.id ?? `phone:${phone}`)
     onClose()
   }
 

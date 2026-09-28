@@ -1,3 +1,5 @@
 export { axiosInstance } from './axiosInstance'
 export { getApiErrorMessage } from './getApiErrorMessage'
 export * from './green-api'
+export { createLocalQuery } from './localQuery'
+export { queryClient } from './queryClient'

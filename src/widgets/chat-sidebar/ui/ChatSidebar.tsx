@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { ChatListItem, useChatStore, type Chat } from '@/entities/chat'
+import { chatModel, ChatListItem, useActiveChatId, useChats, type Chat } from '@/entities/chat'
 import { useLastMessage } from '@/entities/message'
 import { LogoutButton } from '@/features/auth'
 import { CreateChatForm } from '@/features/create-chat'
@@ -30,9 +30,8 @@ interface ChatSidebarProps {
 }
 
 export const ChatSidebar = ({ status, className }: ChatSidebarProps) => {
-  const chats = useChatStore((state) => state.chats)
-  const activeChatId = useChatStore((state) => state.activeChatId)
-  const setActiveChat = useChatStore((state) => state.setActiveChat)
+  const chats = useChats()
+  const activeChatId = useActiveChatId()
   const [isCreating, setIsCreating] = useState(false)
 
   const sortedChats = useMemo(() => [...chats].sort((a, b) => b.updatedAt - a.updatedAt), [chats])
@@ -81,7 +80,7 @@ export const ChatSidebar = ({ status, className }: ChatSidebarProps) => {
               chat={chat}
               active={chat.id === activeChatId}
               preview={<ChatPreview chat={chat} />}
-              onClick={() => setActiveChat(chat.id)}
+              onClick={() => chatModel.setActiveChat(chat.id)}
             />
           ))
         )}

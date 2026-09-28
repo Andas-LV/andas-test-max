@@ -1,4 +1,4 @@
-import { useActiveChat, useChatStore } from '@/entities/chat'
+import { chatModel, useActiveChat } from '@/entities/chat'
 import { MessageInput } from '@/features/send-message'
 import { cn, formatPhone } from '@/shared/lib'
 import { ArrowLeftIcon, Avatar, ChatBubbleIcon, IconButton } from '@/shared/ui'
@@ -6,7 +6,6 @@ import { MessageList } from './MessageList'
 
 export const ChatWindow = ({ className }: { className?: string }) => {
   const chat = useActiveChat()
-  const setActiveChat = useChatStore((state) => state.setActiveChat)
 
   if (!chat) {
     return (
@@ -24,7 +23,7 @@ export const ChatWindow = ({ className }: { className?: string }) => {
   return (
     <section className={cn('flex min-w-0 flex-col bg-chat', className)}>
       <header className="flex h-16 shrink-0 items-center gap-3 border-b border-border bg-surface px-3 md:px-5">
-        <IconButton label="Назад" onClick={() => setActiveChat(null)} className="md:hidden">
+        <IconButton label="Назад" onClick={() => chatModel.setActiveChat(null)} className="md:hidden">
           <ArrowLeftIcon />
         </IconButton>
         <Avatar name={chat.name} size="md" />

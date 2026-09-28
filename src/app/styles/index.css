@@ -24,13 +24,3 @@
   --color-warning: #f59f00;
   --color-danger: #e03131;
 }
-
-html,
-body,
-#root {
-  height: 100%;
-}
-
-body {
-  @apply bg-surface font-sans text-text antialiased;
-}

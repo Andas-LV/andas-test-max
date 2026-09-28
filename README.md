@@ -2,7 +2,7 @@
 
 Веб-интерфейс для отправки и получения текстовых сообщений в MAX через [GREEN-API](https://green-api.com/max). Внешний вид — по мотивам [web.max.ru](https://web.max.ru/).
 
-Стек: React 19, TypeScript, Vite, Tailwind CSS v4, axios, zustand, @tanstack/react-query, react-router-dom.
+Стек: React 19, TypeScript, Vite, Tailwind CSS v4, axios, @tanstack/react-query, react-router-dom.
 
 ## Запуск
 

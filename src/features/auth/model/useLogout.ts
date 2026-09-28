@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
-import { useChatStore } from '@/entities/chat'
-import { useMessageStore } from '@/entities/message'
-import { useSessionStore } from '@/entities/session'
+import { chatModel } from '@/entities/chat'
+import { messageModel } from '@/entities/message'
+import { sessionModel } from '@/entities/session'
 
 export const useLogout = () =>
   useCallback(() => {
-    useSessionStore.getState().clear()
-    useChatStore.getState().reset()
-    useMessageStore.getState().reset()
+    sessionModel.clear()
+    chatModel.reset()
+    messageModel.reset()
   }, [])

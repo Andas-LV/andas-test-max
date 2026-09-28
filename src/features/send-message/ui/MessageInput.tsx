@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
+import { useState, type FormEvent, type KeyboardEvent } from 'react'
 import type { Chat } from '@/entities/chat'
 import { cn } from '@/shared/lib'
 import { SendIcon } from '@/shared/ui'
@@ -8,23 +8,14 @@ const MAX_LENGTH = 4000
 
 export const MessageInput = ({ chat }: { chat: Chat }) => {
   const [text, setText] = useState('')
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const sendMessage = useSendMessage()
 
   const trimmed = text.trim()
-
-  const resize = () => {
-    const textarea = textareaRef.current
-    if (!textarea) return
-    textarea.style.height = 'auto'
-    textarea.style.height = `${Math.min(textarea.scrollHeight, 160)}px`
-  }
 
   const submit = () => {
     if (!trimmed) return
     void sendMessage(chat, trimmed)
     setText('')
-    requestAnimationFrame(resize)
   }
 
   const handleSubmit = (event: FormEvent) => {
@@ -42,17 +33,13 @@ export const MessageInput = ({ chat }: { chat: Chat }) => {
   return (
     <form onSubmit={handleSubmit} className="flex items-end gap-2 px-4 pb-4 pt-2">
       <textarea
-        ref={textareaRef}
         rows={1}
         value={text}
         maxLength={MAX_LENGTH}
         placeholder="Сообщение"
-        onChange={(event) => {
-          setText(event.target.value)
-          resize()
-        }}
+        onChange={(event) => setText(event.target.value)}
         onKeyDown={handleKeyDown}
-        className="max-h-40 min-h-11 flex-1 resize-none rounded-3xl bg-surface px-4 py-2.5 text-[15px] leading-6 text-text shadow-xs outline-none placeholder:text-text-muted"
+        className="field-sizing-content max-h-40 min-h-11 flex-1 resize-none rounded-3xl bg-surface px-4 py-2.5 text-[15px] leading-6 text-text shadow-xs outline-none placeholder:text-text-muted"
       />
       <button
         type="submit"

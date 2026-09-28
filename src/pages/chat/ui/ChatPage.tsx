@@ -1,4 +1,4 @@
-import { useChatStore } from '@/entities/chat'
+import { useActiveChatId } from '@/entities/chat'
 import { useReceiveNotifications } from '@/features/receive-messages'
 import { cn } from '@/shared/lib'
 import { ChatSidebar } from '@/widgets/chat-sidebar'
@@ -6,7 +6,7 @@ import { ChatWindow } from '@/widgets/chat-window'
 
 export const ChatPage = () => {
   const status = useReceiveNotifications()
-  const hasActiveChat = useChatStore((state) => state.activeChatId !== null)
+  const hasActiveChat = useActiveChatId() !== null
 
   return (
     <div className="flex h-dvh overflow-hidden">
