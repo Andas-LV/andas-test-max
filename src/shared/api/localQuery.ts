@@ -13,15 +13,11 @@ const readStorage = <T>(storageKey: string, initial: T): T => {
 const writeStorage = (storageKey: string, value: unknown) => {
   try {
     localStorage.setItem(storageKey, JSON.stringify(value))
-  } catch {
-    // localStorage недоступен или переполнен — состояние остаётся только в памяти
+  } catch (error) {
+    console.warn('Не удалось сохранить состояние в localStorage', error)
   }
 }
 
-/**
- * Клиентское состояние в кэше react-query с сохранением в localStorage.
- * Запрос никогда не устаревает: данные меняются только через set/update.
- */
 export const createLocalQuery = <T>(queryKey: QueryKey, storageKey: string, initial: T) => {
   const load = () => readStorage(storageKey, initial)
 

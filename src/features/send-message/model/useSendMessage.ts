@@ -32,7 +32,6 @@ export const useSendMessage = () => {
           chatId: chat.chatId,
           message: text,
         })
-        // Уведомление outgoingAPIMessageReceived могло прийти раньше ответа
         if (findMessage((message) => message.id === idMessage)) {
           removeMessage(chat.id, localId)
         } else {

@@ -1,4 +1,3 @@
-/** Оставляет только цифры, 8XXXXXXXXXX → 7XXXXXXXXXX */
 export const normalizePhone = (value: string) => {
   const digits = value.replace(/\D/g, '')
   return digits.length === 11 && digits.startsWith('8') ? `7${digits.slice(1)}` : digits

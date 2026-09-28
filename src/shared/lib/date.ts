@@ -6,7 +6,6 @@ export const isSameDayTimestamp = (a: number, b: number) => isSameDay(new Date(a
 export const formatTime = (timestamp: number) =>
   new Date(timestamp).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
 
-/** Время для списка чатов: сегодня — часы, иначе — дата */
 export const formatShortDate = (timestamp: number) =>
   isSameDayTimestamp(timestamp, Date.now())
     ? formatTime(timestamp)

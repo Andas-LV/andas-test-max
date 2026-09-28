@@ -15,17 +15,12 @@ const extractText = (data?: MessageData) => {
   return null
 }
 
-/** Запоминает числовой id MAX у чата, созданного по номеру телефона */
 const linkMaxId = (chatKey: string, maxId: string) => {
   const { chats } = chatModel.getState()
   const chat = chats.find((item) => item.id === chatKey)
   if (chat && !chat.maxId) chatModel.updateChat(chat.id, { maxId })
 }
 
-/**
- * В MAX входящие приходят с числовым chatId, а чат пользователь создаёт по номеру.
- * Сопоставляем по maxId / chatId / номеру телефона, иначе создаём новый чат.
- */
 const resolveChat = (sender: SenderData, direction: MessageDirection): Chat => {
   const { chats } = chatModel.getState()
   const phone =
@@ -46,7 +41,6 @@ const resolveChat = (sender: SenderData, direction: MessageDirection): Chat => {
     const patch: Partial<Chat> = {}
     if (!existing.maxId) patch.maxId = sender.chatId
     if (!existing.phone && phone) patch.phone = phone
-    // Заменяем номер на имя контакта, если пользователь не переименовывал чат
     if (name && existing.phone && existing.name === formatPhone(existing.phone)) patch.name = name
     if (Object.keys(patch).length) chatModel.updateChat(existing.id, patch)
     return { ...existing, ...patch }
@@ -73,7 +67,6 @@ export const handleNotification = (body: NotificationBody) => {
 
   const { findMessage } = messageModel
 
-  // Сообщение, отправленное из этого интерфейса, уже есть в истории
   const known =
     findMessage((message) => message.id === idMessage) ??
     (body.typeWebhook === 'outgoingAPIMessageReceived'

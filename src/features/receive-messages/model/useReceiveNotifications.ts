@@ -9,8 +9,8 @@ export type ConnectionStatus = 'connecting' | 'online' | 'offline'
 
 const RECEIVE_TIMEOUT_SEC = 20
 const RETRY_DELAY_MS = 3000
+const MIN_EMPTY_POLL_MS = 1000
 
-/** Long polling очереди уведомлений GREEN-API: receiveNotification → обработка → deleteNotification */
 export const useReceiveNotifications = () => {
   const credentials = useCredentials()
   const [status, setStatus] = useState<ConnectionStatus>('connecting')
@@ -24,12 +24,16 @@ export const useReceiveNotifications = () => {
     const poll = async () => {
       while (!signal.aborted) {
         try {
+          const startedAt = Date.now()
           const notification = await greenApi.receiveNotification(credentials, {
             receiveTimeout: RECEIVE_TIMEOUT_SEC,
             signal,
           })
           setStatus('online')
-          if (!notification) continue
+          if (!notification) {
+            if (Date.now() - startedAt < MIN_EMPTY_POLL_MS) await delay(RETRY_DELAY_MS, signal)
+            continue
+          }
 
           try {
             handleNotification(notification.body)

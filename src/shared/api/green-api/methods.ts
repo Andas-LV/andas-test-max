@@ -32,7 +32,6 @@ export const greenApi = {
     return data
   },
 
-  /** Long polling: ждёт уведомление до receiveTimeout секунд, null — очередь пуста */
   receiveNotification: async (
     credentials: GreenApiCredentials,
     { receiveTimeout = 20, signal }: { receiveTimeout?: number; signal?: AbortSignal } = {},
