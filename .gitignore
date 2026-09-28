@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+.playwright-mcp
+
+# Env
+.env
+.env.local
